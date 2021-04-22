@@ -1,0 +1,1 @@
+# npm install aws-sdk cors dotenv express express-fileupload mongoose node-input-validator uuidv4 ioredis
