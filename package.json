@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/tooney92/toolbox-backend#readme",
   "dependencies": {
+    "app-root-path": "^3.0.0",
     "aws-sdk": "^2.890.0",
     "bcrypt": "^5.0.1",
     "better-config": "^1.2.3",
@@ -30,7 +31,9 @@
     "mongoose": "^5.12.5",
     "morgan": "^1.10.0",
     "node-input-validator": "^4.4.1",
-    "uuidv4": "^6.2.7"
+    "uuidv4": "^6.2.7",
+    "winston": "^3.3.3",
+    "winston-daily-rotate-file": "^4.5.2"
   },
   "devDependencies": {
     "nodemon": "^2.0.7"

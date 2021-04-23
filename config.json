@@ -1,12 +1,12 @@
 {
-    "logLevel": "debug",
+    "consoleLogLevel": "error",
     "session": {
       "secret": "toolzbox24#@41_",
       "appName": "toolzboxx",
       "keyPrefix": "session"  
     },
     "application": {
-      "port": 8081
+      "port": 3000
     },
     "auth": {
       "port": 8083
