@@ -1,5 +1,6 @@
 {
     "consoleLogLevel": "error",
+    "DATABASE_URL": "",
     "session": {
       "secret": "toolzbox24#@41_",
       "appName": "toolzboxx",

@@ -7,11 +7,9 @@ const userSchema = mongoose.Schema({
     },
     bankAccNum:{
         type:String,
-        unique: true
     },
     bank:{
         type:String,
-        required: true
     },
     gender:{
         type:String,
