@@ -1,0 +1,1 @@
+# npm install aws-sdk cors dotenv express express-fileupload mongoose node-input-validator uuidv4 jsonwebtoken better-config ioredis winston winston-daily-rotate-file morgan app-root-path 

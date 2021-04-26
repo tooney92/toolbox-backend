@@ -1,0 +1,25 @@
+{
+    "consoleLogLevel": "error",
+    "DATABASE_URL": "",
+    "session": {
+      "secret": "toolzbox24#@41_",
+      "appName": "toolzboxx",
+      "keyPrefix": "session"  
+    },
+    "application": {
+      "port": 3000
+    },
+    "auth": {
+      "port": 8083
+    },
+    "checkinReceiver": {
+      "port": 8082,
+      "maxStreamLength": 500000
+    },
+    "redis": {
+      "host": "localhost",
+      "port": 6379,
+      "password": null,
+      "keyPrefix": "ncc"
+    }
+  }
