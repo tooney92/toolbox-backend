@@ -45,3 +45,37 @@ module.exports.getOne = async(req, res)=>{
         res.status(500).send("unable to perform request")
     }
 }
+
+module.exports.updateOne = async(req, res)=>{
+    try {
+        
+        let updatedIssue = await serviceIssues.findOneAndUpdate({
+            _id: req.params.id
+        },{
+            $set:req.body
+        })
+        if(!updatedIssue){
+            return res.status(422).send("unable to update. Check Id")
+        }
+        return res.json({updatedIssue})
+    } catch (error) {
+        logger.error(`route: /service-category/, message - ${error.message}, stack trace - ${error.stack}`);
+        res.status(500).send("unable to perform request")
+    }
+}
+
+module.exports.deleteOne = async(req, res)=>{
+    try {
+        
+        let info = await serviceIssues.findOneAndDelete({
+            _id: req.params.id
+        })
+        if(!info){
+            return res.status(404).send("category does not exist")
+        }
+        res.send("delete sucessful")
+    } catch (error) {
+        logger.error(`route: /service-category/, message - ${error.message}, stack trace - ${error.stack}`);
+        res.status(500).send("unable to perform request")
+    }
+}
