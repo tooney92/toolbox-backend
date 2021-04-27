@@ -10,7 +10,7 @@ const webtoken = require("../../middlewares/auth")
 const helper = require("../../helpers/errorFormater")
 const _ = require("lodash")
 
-
+//add min password length
 module.exports.create = async(req, res)=>{
     try {
         const v = new Validator(req.body,{
@@ -32,7 +32,7 @@ module.exports.create = async(req, res)=>{
 
     } catch (error) {
         logger.error(`route: /admins/signup, message - ${error.message}, stack trace - ${error.stack}`);
-        if(error.code === 11000) return res.status(422).json({error: helper.duplicateMessageFormatter(error.keyPattern)})
+        if(error.code === 11000) return res.status(409).json({error: helper.duplicateMessageFormatter(error.keyPattern)})
         res.status(500).send("unable to perform request")
     }
 }

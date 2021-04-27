@@ -19,15 +19,15 @@ module.exports.create = async(req, res)=>{
         res.json({info})
     } catch (error) {
         logger.error(`route: /service-category/, message - ${error.message}, stack trace - ${error.stack}`);
-        if(error.code === 11000) return res.status(422).json({error: helper.duplicateMessageFormatter(error.keyPattern)})
+        if(error.code === 11000) return res.status(409).json({error: helper.duplicateMessageFormatter(error.keyPattern)})
         res.status(500).send("unable to perform request")
     }
 }
 
 module.exports.getAll = async(req, res)=>{
     try {
-        let info = await serviceCategory.find()
-        res.json({info})
+        let categories = await serviceCategory.find()
+        res.json({categories})
     } catch (error) {
         logger.error(`route: /service-category/, message - ${error.message}, stack trace - ${error.stack}`);
         res.status(500).send("unable to perform request")
@@ -36,8 +36,8 @@ module.exports.getAll = async(req, res)=>{
 
 module.exports.getOne = async(req, res)=>{
     try {
-        let info = await serviceCategory.findOne({_id: req.params.id})
-        res.json({info})
+        let category = await serviceCategory.findOne({_id: req.params.id})
+        res.json({category})
     } catch (error) {
         logger.error(`route: /service-category/, message - ${error.message}, stack trace - ${error.stack}`);
         res.status(500).send("unable to perform request")
@@ -63,6 +63,7 @@ module.exports.updateOne = async(req, res)=>{
         return res.json({updatedCategory})
     } catch (error) {
         logger.error(`route: /service-category/, message - ${error.message}, stack trace - ${error.stack}`);
+        if(error.code === 11000) return res.status(409).json({error: helper.duplicateMessageFormatter(error.keyPattern)})
         res.status(500).send("unable to perform request")
     }
 }
