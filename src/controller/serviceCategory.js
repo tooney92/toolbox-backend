@@ -60,7 +60,7 @@ module.exports.updateOne = async (req, res) => {
             { new: true }
         )
         if (!updatedCategory) {
-            return res.status(422).send("unable to update. Check Id")
+            return res.status(404).send("unable to update. Check Id")
         }
         return res.json({ updatedCategory })
     } catch (error) {

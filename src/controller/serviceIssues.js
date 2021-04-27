@@ -55,7 +55,7 @@ module.exports.updateOne = async (req, res) => {
             $set: req.body
         }, { new: true })
         if (!updatedIssue) {
-            return res.status(422).send("unable to update. Check Id")
+            return res.status(404).send("unable to update. Check Id")
         }
         return res.json({ updatedIssue })
     } catch (error) {
@@ -72,7 +72,7 @@ module.exports.deleteOne = async (req, res) => {
             _id: req.params.id
         })
         if (!info) {
-            return res.status(404).send("category does not exist")
+            return res.status(404).send("issue does not exist")
         }
         res.send("delete sucessful")
     } catch (error) {
