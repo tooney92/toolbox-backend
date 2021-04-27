@@ -14,6 +14,9 @@ const mongoose = require("mongoose")
 
 config.set('./config.json');
 
+//cors handling..................
+app.use(cors())
+
 //parse req with express
 app.use(express.json())
 
