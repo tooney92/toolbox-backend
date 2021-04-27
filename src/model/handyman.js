@@ -68,6 +68,10 @@ const handyManSchema = mongoose.Schema({
         type: Integer,
         default: 0
     },
+    serviceCategory: {
+        type: mongoose.Schema.ObjectId,
+        ref: "serviceCategory"
+    },
     deactivated_by: {
         type: mongoose.Schema.ObjectId,
         ref: "Admin"
