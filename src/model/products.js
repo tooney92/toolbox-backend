@@ -3,15 +3,15 @@ const mongoose = require("mongoose")
 const productSchema = mongoose.Schema({
     title:{
         type:String,
-        required: true
+        required: true,
+        unique: true
     },
     price:{
-        type: Integer,
-        default: 0
+        type: Number,
+        required: true
     },
     imageUrl:{
-        type:String,
-        default: null
+        type:String
     },
     created_by: {
         type: mongoose.Schema.ObjectId,
@@ -20,6 +20,10 @@ const productSchema = mongoose.Schema({
     category: {
         type: mongoose.Schema.ObjectId,
         ref: "productCategory"
+    },
+    deleted: {
+        type:Boolean,
+        default: false
     }
 },{
     timestamps: true

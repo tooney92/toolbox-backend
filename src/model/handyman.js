@@ -65,7 +65,7 @@ const handyManSchema = mongoose.Schema({
         default: false
     },
     wallet: {
-        type: Integer,
+        type: Number,
         default: 0
     },
     serviceCategory: {
@@ -73,6 +73,10 @@ const handyManSchema = mongoose.Schema({
         ref: "serviceCategory"
     },
     deactivated_by: {
+        type: mongoose.Schema.ObjectId,
+        ref: "Admin"
+    },
+    created_by: {
         type: mongoose.Schema.ObjectId,
         ref: "Admin"
     }
