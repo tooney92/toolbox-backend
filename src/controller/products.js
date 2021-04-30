@@ -46,8 +46,11 @@ module.exports.getOne = async (req, res) => {
         const fields = {
             created_by: 0
         }
-        let category = await Product.findOne({ _id: req.params.id }, fields).populate('category')
-        res.json({ category })
+        let product = await Product.findOne({ _id: req.params.id }, fields).populate('category')
+        if (!product) {
+            return res.status(404).send("product does not exist. Check Id")
+        }
+        res.json({ product })
     } catch (error) {
         logger.error(`route: /products/, message - ${error.message}, stack trace - ${error.stack}`);
         res.status(500).send("unable to perform request")
@@ -57,9 +60,6 @@ module.exports.getOne = async (req, res) => {
 module.exports.updateOne = async (req, res) => {
     try {
         
-        const fields = {
-            created_by:0
-        }
         const info = _.omit(req.body, ["imageUrl", "created_by"])
         let updatedProduct = await Product.findOneAndUpdate({
             _id: req.params.id

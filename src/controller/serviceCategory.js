@@ -37,7 +37,10 @@ module.exports.getAll = async (req, res) => {
 module.exports.getOne = async (req, res) => {
     try {
         let category = await serviceCategory.findOne({ _id: req.params.id })
-        res.json({ category })
+        if (!category) {
+            return res.status(404).send("service category does not exist. Check Id")
+        }
+        return res.json({ category })
     } catch (error) {
         logger.error(`route: /service-category/, message - ${error.message}, stack trace - ${error.stack}`);
         res.status(500).send("unable to perform request")

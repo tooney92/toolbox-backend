@@ -76,7 +76,10 @@ module.exports.getOne = async (req, res) => {
             primaryArea2: 1,
         }
         let handyMan = await handyManModel.findOne({ userName: req.params.id },fields).populate('serviceCategory')
-        res.json({ handyMan })
+        if (!handyMan) {
+            return res.status(404).send("handy man does not exist. Check Id")
+        }
+        return res.json({ handyMan })
     } catch (error) {
         logger.error(`route: /admin-handyMan/, message - ${error.message}, stack trace - ${error.stack}`);
         res.status(500).send("unable to perform request")

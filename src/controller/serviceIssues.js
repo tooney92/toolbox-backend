@@ -38,7 +38,10 @@ module.exports.getAll = async (req, res) => {
 module.exports.getOne = async (req, res) => {
     try {
         let serviceIssuesData = await serviceIssues.findOne({ _id: req.params.id }).populate('serviceCategory')
-        res.json({ serviceIssuesData })
+        if (!serviceIssuesData) {
+            return res.status(404).send("service issue does not exist. Check Id")
+        }
+        return res.json({ serviceIssuesData })
     } catch (error) {
         logger.error(`route: /service-issues/, message - ${error.message}, stack trace - ${error.stack}`);
         console.log(error.code);
