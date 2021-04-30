@@ -16,7 +16,7 @@ module.exports.verifyAdmin = async(req, res, next)=>{
             next()
         }catch(err){
             console.log(err);
-            res.status(401).send({error: 'invalid token'})
+            res.status(401).send({error: 'Access Denied.'})
         }
     }
 }
