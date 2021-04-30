@@ -50,7 +50,6 @@ module.exports.getAll = async (req, res) => {
             primaryArea1: 1,
             primaryArea2: 1,
             serviceCategory: 1,
-            created_by: 0
         }
         let handyMen = await handyManModel.find({},fields).populate('serviceCategory')
         res.json({ handyMen })
@@ -75,8 +74,6 @@ module.exports.getOne = async (req, res) => {
             phoneNumber: 1,
             primaryArea1: 1,
             primaryArea2: 1,
-            serviceCategory: 1,
-            created_by: 0
         }
         let handyMan = await handyManModel.findOne({ userName: req.params.id },fields).populate('serviceCategory')
         res.json({ handyMan })
