@@ -5,10 +5,22 @@ const { Validator } = require('node-input-validator')
 const bcrypt = require('bcrypt');
 const helper = require("../../helpers/errorFormater")
 const _ = require("lodash")
+const awsS3Helper = require('../../helpers/awsS3Upload')
 
+const mimeTypes = [
+    'image/png',
+    'image/jpeg',
+    'image/jpg',
+    'image/gif'
+]
 
+let fileErrMsg = "invalid file format. Only png, jpg, jpeg, gif allowed"
 module.exports.create = async (req, res) => {
     try {
+
+        if (req.files == null || !mimeTypes.includes(req.files.upload.mimetype)) {
+            return res.status(400).send(req.files == undefined ? "please attach file" : fileErrMsg)
+        }
         const v = new Validator(req.body, {
             title: "required|minLength:3",
             price: "required|integer",
@@ -16,10 +28,13 @@ module.exports.create = async (req, res) => {
         })
         const match = await v.check()
         if (!match) return res.status(422).json({ error: helper.vErrorsMessageFormatter(v.errors) })
+        let fileData =  await awsS3Helper.s3Upload(req.files.upload)
         req.body.created_by = req.user._id
+        req.body.imageUrl = fileData.data.Location
+        req.body.imageKey = fileData.data.Key
         const newProduct = new Product(req.body)
         let info = await newProduct.save()
-        info = _.omit(info.toObject(), ["created_by"])
+        info = _.omit(info.toObject(), ["created_by", "imageKey"])
         res.json({ product: info })
     } catch (error) {
         logger.error(`route: /products/, message - ${error.message}, stack trace - ${error.stack}`);
@@ -31,7 +46,8 @@ module.exports.create = async (req, res) => {
 module.exports.getAll = async (req, res) => {
     try {
         const fields = {
-            created_by: 0
+            created_by: 0,
+            imageKey: 0
         }
         let products = await Product.find({deleted: false}, fields).populate('category')
         res.json({ products })
@@ -44,7 +60,8 @@ module.exports.getAll = async (req, res) => {
 module.exports.getOne = async (req, res) => {
     try {
         const fields = {
-            created_by: 0
+            created_by: 0,
+            imageKey: 0
         }
         let product = await Product.findOne({ _id: req.params.id }, fields).populate('category')
         if (!product) {
@@ -60,7 +77,7 @@ module.exports.getOne = async (req, res) => {
 module.exports.updateOne = async (req, res) => {
     try {
         
-        const info = _.omit(req.body, ["imageUrl", "created_by"])
+        const info = _.omit(req.body, ["imageKey", "created_by"])
         let updatedProduct = await Product.findOneAndUpdate({
             _id: req.params.id
         }, {

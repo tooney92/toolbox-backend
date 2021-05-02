@@ -6,12 +6,17 @@ const productSchema = mongoose.Schema({
         required: true,
         unique: true
     },
+    imageUrl:{
+        type:String,
+        unique: true
+    },
+    imageKey:{
+        type:String,
+        unique: true
+    },
     price:{
         type: Number,
         required: true
-    },
-    imageUrl:{
-        type:String
     },
     created_by: {
         type: mongoose.Schema.ObjectId,
