@@ -6,7 +6,6 @@ const {uuid} = require('uuidv4');
 const { Validator } = require('node-input-validator')
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
-const webtoken = require("../../middlewares/auth")
 const helper = require("../../helpers/errorFormater")
 const _ = require("lodash")
 
@@ -63,7 +62,7 @@ module.exports.login = async(req, res)=>{
             createdAt: 1,
             isUser: 1,
         }
-        let userInfo = await User.findOne({email: req.body.email}, loginFields)
+        let userInfo = await User.findOne({email: req   .body.email}, loginFields)
         userInfo = userInfo.toObject()
         const matchPassword = await bcrypt.compare(req.body.password, userInfo.password)
         if(!matchPassword){
@@ -72,10 +71,11 @@ module.exports.login = async(req, res)=>{
         if(userInfo.deactivated || userInfo.deleted){
             return res.status(401).send({error: userInfo.deleted ? "account deleted, contact admin" : "account deactivated contact admin"})
         }
-        userInfo = _.omit(userInfo, ["password", "deactivated", "deleted", "_id", "deactivated_by"])
+        userInfo = _.omit(userInfo, ["password", "deactivated", "deleted", "deactivated_by"])
         //jwt
         await jwt.sign({data: userInfo}, process.env.token_secret, {expiresIn: 60 * 60 * 2}, (err, token) => {
             if(err) return res.status(500).json({message: "Token Could not be generated. Please try logging in again!"})
+            delete userInfo._id
             return res.status(200).json({
                 userInfo,
                 token: token
