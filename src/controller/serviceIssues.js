@@ -29,6 +29,7 @@ module.exports.create = async (req, res) => {
 module.exports.getAll = async (req, res) => {
     try {
 
+        console.log(req.body);
         const v = new Validator(req.body, {
             categoryId: "required",
         })
