@@ -54,6 +54,9 @@ module.exports.login = async(req, res)=>{
             isOga:1
         }
         let adminInfo = await Admin.findOne({email: req.body.email}, loginFields)
+        if(!adminInfo){
+            return res.status(404).send("user does not exist")
+        }
         adminInfo = adminInfo.toObject()
         const matchPassword = await bcrypt.compare(req.body.password, adminInfo.password)
         if(!matchPassword){

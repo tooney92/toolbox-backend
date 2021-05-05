@@ -49,6 +49,10 @@ const userSchema = mongoose.Schema({
         type: Boolean,
         default: false
     },
+    isUser: {
+        type: Boolean,
+        default: true
+    },
     deactivated_by: {
         type: mongoose.Schema.ObjectId,
         ref: "Admin"

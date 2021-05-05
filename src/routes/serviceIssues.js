@@ -1,13 +1,13 @@
 const router = require('express').Router();
 const {create, getAll, getOne, updateOne, deleteOne} = require('../controller/serviceIssues')
-const {verifyAdmin} = require('../../middlewares/auth')
+const {verifyAdmin, verifyUserAdmin} = require('../../middlewares/auth')
 
 //create
 router.post('/service-issues',[verifyAdmin], create)
 //get all
-router.get('/service-issues',[verifyAdmin], getAll)
+router.get('/service-issues',[verifyUserAdmin], getAll)
 //get one
-router.get('/service-issues/:id',[verifyAdmin], getOne)
+router.get('/service-issues/:id',[verifyUserAdmin], getOne)
 //update one
 router.put('/service-issues/:id',[verifyAdmin], updateOne)
 //delete one

@@ -15,6 +15,7 @@ const mimeTypes = [
 ]
 
 let fileErrMsg = "invalid file format. Only png, jpg, jpeg, gif allowed"
+
 module.exports.create = async (req, res) => {
     try {
 

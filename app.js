@@ -40,7 +40,7 @@ app.use('/api', routes)
 
 
 //mongoDB connection
-mongoose.connect(process.env.DATABASE_URL, {useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: false, useFindAndModify: false})
+mongoose.connect(process.env.DATABASE_URL, {useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true, useFindAndModify: false})
 const db = mongoose.connection
 
 db.on("open", ()=>{

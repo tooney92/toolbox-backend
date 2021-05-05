@@ -1,9 +1,15 @@
 const router = require('express').Router();
-const {signUp, login} = require("../controller/user")
+const {signUp, login, getUser, updateUser, deactivate} = require("../controller/user")
 
 router.post('/user/signup', signUp) 
 
 router.post('/user/login', login)
+
+router.get('/user', getUser)
+
+router.put('/user', updateUser)
+
+router.delete('/user', deactivate)
 
 
 // router.get('/user/error', async(req, res)=>{

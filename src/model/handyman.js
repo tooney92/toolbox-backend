@@ -48,7 +48,11 @@ const handyManSchema = mongoose.Schema({
     primaryArea3:{
         type: String
     },
-    profile_picture:{
+    profilePicture:{
+        type: String,
+        default:null
+    },
+    ImageKey:{
         type: String,
         default:null
     },
@@ -63,6 +67,10 @@ const handyManSchema = mongoose.Schema({
     engaged: {
         type: Boolean,
         default: false
+    },
+    isHandyMan: {
+        type: Boolean,
+        default: true
     },
     wallet: {
         type: Number,
