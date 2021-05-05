@@ -28,14 +28,7 @@ module.exports.create = async (req, res) => {
 
 module.exports.getAll = async (req, res) => {
     try {
-
-        console.log(req.body);
-        const v = new Validator(req.body, {
-            categoryId: "required",
-        })
-        const match = await v.check()
-        if (!match) return res.status(422).json({ error: helper.vErrorsMessageFormatter(v.errors) })
-        let serviceIssuesData = await serviceIssues.find({serviceCategory: req.body.categoryId}).populate('serviceCategory')
+        let serviceIssuesData = await serviceIssues.find({serviceCategory: req.params.id}).populate('serviceCategory')
         res.json({ serviceIssuesData })
     } catch (error) {
         logger.error(`route: /service-issues/, message - ${error.message}, stack trace - ${error.stack}`);

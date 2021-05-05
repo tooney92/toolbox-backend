@@ -5,7 +5,7 @@ const {verifyAdmin, verifyUserAdmin} = require('../../middlewares/auth')
 //create
 router.post('/service-issues',[verifyAdmin], create)
 //get all
-router.get('/service-issues',[verifyUserAdmin], getAll)
+router.get('/service-issues/get-issues/:id',[verifyUserAdmin], getAll)
 //get one
 router.get('/service-issues/:id',[verifyUserAdmin], getOne)
 //update one
