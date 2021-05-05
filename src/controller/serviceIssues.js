@@ -27,9 +27,14 @@ module.exports.create = async (req, res) => {
 }
 
 module.exports.getAll = async (req, res) => {
-    try {
-        let serviceIssuesData = await serviceIssues.find({serviceCategory: req.params.id}).populate('serviceCategory')
-        res.json({ serviceIssuesData })
+    try {  
+        if(req.query.categoryId == null || req.query.categoryId == ""){
+            let serviceIssuesData = await serviceIssues.find().populate('serviceCategory')
+            return res.json({ serviceIssuesData })
+        }else{
+            let serviceIssuesData = await serviceIssues.find({serviceCategory: req.query.categoryId}).populate('serviceCategory')
+            return res.json({ serviceIssuesData })
+        }
     } catch (error) {
         logger.error(`route: /service-issues/, message - ${error.message}, stack trace - ${error.stack}`);
         res.status(500).send("unable to perform request")
