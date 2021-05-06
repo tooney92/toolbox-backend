@@ -70,7 +70,7 @@ module.exports.get = async(req, res)=>{
             charge: 1
         }
         if(req.query.id == null || req.query.id == ""){
-            let engagements = await Engagement.find({}, fields).populate('serviceIssue')
+            let engagements = await Engagement.find({userId: req.user._id}, fields).populate('serviceIssue')
             return res.json({engagements})
         }
         let engagement = await Engagement.findOne({_id: req.query.id, userId: req.user._id}, fields).populate('serviceIssue')
