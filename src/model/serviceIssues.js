@@ -6,6 +6,16 @@ const serviceIssuesSchema = mongoose.Schema({
         required: true,
         unique: true
     },
+    imageUrl: {
+        type: String,
+        required: true,
+        unique: true
+    },
+    imageKey: {
+        type: String,
+        required: true,
+        unique: true
+    },
     serviceCategory: {
         type: mongoose.Schema.ObjectId,
         ref: "serviceCategory"

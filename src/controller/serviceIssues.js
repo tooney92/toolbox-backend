@@ -5,6 +5,7 @@ const { Validator } = require('node-input-validator')
 const bcrypt = require('bcrypt');
 const helper = require("../../helpers/errorFormater")
 const _ = require("lodash")
+const awsS3Helper = require('../../helpers/awsS3Upload')
 
 const mimeTypes = [
     'image/png',
@@ -17,6 +18,11 @@ let fileErrMsg = "invalid file format. Only png, jpg, jpeg, gif allowed"
 
 module.exports.create = async (req, res) => {
     try {
+
+        if (req.files == null ||!mimeTypes.includes(req.files.upload.mimetype)) {
+            return res.status(400).send(req.files == undefined ? "please attach file" : fileErrMsg)
+        }
+
         const v = new Validator(req.body, {
             title: "required|minLength:5",
             serviceCategory: "required",
@@ -24,10 +30,19 @@ module.exports.create = async (req, res) => {
         })
         const match = await v.check()
         if (!match) return res.status(422).json({ error: helper.vErrorsMessageFormatter(v.errors) })
+        const titleExists = await serviceIssues.exists({title: req.body.title})
+        if(titleExists){
+            return res.status(409).send("title already exists")
+        }
+        let fileData =  await awsS3Helper.s3Upload(req.files.upload)
+        req.body.imageUrl = fileData.data.Location
+        req.body.imageKey = fileData.data.Key
         req.body.created_by = req.user._id
         const newServiceIssues = new serviceIssues(req.body)
         let serviceIssuesData = await newServiceIssues.save()
-        res.json({ serviceIssuesData })
+        serviceIssuesData = _.omit(serviceIssuesData.toObject(), ["created_by", "imageKey"])
+        res.json(serviceIssuesData)
+
     } catch (error) {
         logger.error(`route: /service-issues/, message - ${error.message}, stack trace - ${error.stack}`);
         if (error.code === 11000) return res.status(409).json({ error: helper.duplicateMessageFormatter(error.keyPattern) })
@@ -37,11 +52,17 @@ module.exports.create = async (req, res) => {
 
 module.exports.getAll = async (req, res) => {
     try {  
+        const fields={
+            title: 1,
+            imageUrl: 1,
+            serviceCategory: 1,
+            serviceCharge: 1
+        }
         if(req.query.categoryId == null || req.query.categoryId == ""){
-            let serviceIssuesData = await serviceIssues.find().populate('serviceCategory')
+            let serviceIssuesData = await serviceIssues.find({}, fields).populate('serviceCategory')
             return res.json({ serviceIssuesData })
         }else{
-            let serviceIssuesData = await serviceIssues.find({serviceCategory: req.query.categoryId}).populate('serviceCategory')
+            let serviceIssuesData = await serviceIssues.find({serviceCategory: req.query.categoryId},fields).populate('serviceCategory')
             return res.json({ serviceIssuesData })
         }
     } catch (error) {
