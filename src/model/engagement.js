@@ -1,7 +1,15 @@
 const mongoose = require("mongoose")
 
 const engagementSchema = mongoose.Schema({
-    handyManId: {
+    userId: {
+        type: String,
+        required: true
+    },
+    userAddress: {
+        type: String,
+        required: true
+    },
+    userName: {
         type: String,
         required: true
     },
@@ -9,11 +17,7 @@ const engagementSchema = mongoose.Schema({
         type: String,
         required: true
     },
-    userId: {
-        type: String,
-        required: true
-    },
-    userName: {
+    handyManId: {
         type: String,
         required: true
     },
@@ -30,6 +34,10 @@ const engagementSchema = mongoose.Schema({
         required: true,
         ref: "serviceIssues"
     },
+    invoiceId:{
+        type: mongoose.Schema.ObjectId,
+        ref: "invoice"
+    },
     completed:{
         type: Boolean,
         default: false
@@ -41,6 +49,14 @@ const engagementSchema = mongoose.Schema({
     paystackId:{
         type: String,
         default: null
+    },
+    serviceCharge:{
+        type: Number,
+        required: true
+    },
+    charge:{
+        type: Number,
+        default: 0
     }
 }, {
     timestamps: true

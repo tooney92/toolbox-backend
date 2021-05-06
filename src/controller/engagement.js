@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const Engagement = require("../model/engagement")
 const handyMan = require("../model/handyman")
+const serviceIssue = require("../model/serviceIssues")
 const jwt = require("jsonwebtoken")
 const logger = require('../../util/winston');
 const {uuid} = require('uuidv4');
@@ -17,13 +18,15 @@ module.exports.create = async(req, res)=>{
         const v = new Validator(req.body,{
             handyMan: "required",
             serviceIssue: "required",
+            serviceCharge: "required",
+            userAddress: "required"
         })
 
         const match = await v.check()
         if(!match) return res.status(422).json({error:  helper.vErrorsMessageFormatter(v.errors)})
         let handyManInfo = await handyMan.findOne({userName: req.body.handyMan})
         if(!handyManInfo){
-            res.status(404).send("handy man does not exist")
+            res.status(404).send("handy man does not exist. Check user name")
         }
         
         req.body.handyManId = handyManInfo._id
@@ -34,7 +37,9 @@ module.exports.create = async(req, res)=>{
             handyMan: req.body.handyMan,
             userId: req.user._id,
             userName: req.user.userName,
-            serviceIssue: req.body.serviceIssue
+            serviceIssue: req.body.serviceIssue,
+            userAddress: req.body.userAddress,
+            serviceCharge: req.body.serviceCharge
         }
 
         let newEngagement = new Engagement(info)
@@ -59,13 +64,16 @@ module.exports.get = async(req, res)=>{
             paystackId: 1,
             handyMan: 1,
             userName: 1,
-            serviceIssue: 1
+            serviceIssue: 1,
+            userAddress: 1,
+            serviceCharge: 1,
+            charge: 1
         }
         if(req.query.id == null || req.query.id == ""){
             let engagements = await Engagement.find({}, fields).populate('serviceIssue')
             return res.json({engagements})
         }
-        let engagement = await Engagement.findOne({_id: req.query.id}, fields).populate('serviceIssue')
+        let engagement = await Engagement.findOne({_id: req.query.id, userId: req.user._id}, fields).populate('serviceIssue')
         if(!engagement){
             return res.status(404).send('check Id')
         }

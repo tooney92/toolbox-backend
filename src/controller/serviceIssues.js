@@ -6,6 +6,15 @@ const bcrypt = require('bcrypt');
 const helper = require("../../helpers/errorFormater")
 const _ = require("lodash")
 
+const mimeTypes = [
+    'image/png',
+    'image/jpeg',
+    'image/jpg',
+    'image/gif'
+]
+
+let fileErrMsg = "invalid file format. Only png, jpg, jpeg, gif allowed"
+
 module.exports.create = async (req, res) => {
     try {
         const v = new Validator(req.body, {
