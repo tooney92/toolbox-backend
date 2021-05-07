@@ -43,6 +43,7 @@ module.exports.create = async (req, res) => {
         req.body.profilePicture = fileData.data.Location
         req.body.ImageKey = fileData.data.Key
         req.body.created_by = req.user._id
+        req.body.password = bcrypt.hashSync(req.body.password, saltRounds)
         let handyMan = new handyManModel(req.body)
         handyMan = await handyMan.save()
         let info = _.omit(handyMan.toObject(), ["created_by", "imageKey", "deactivated_by", "created_by", "engaged", "deleted ", "deactivated"])

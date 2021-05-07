@@ -18,8 +18,9 @@ const engagementSchema = mongoose.Schema({
         required: true
     },
     handyManId: {
-        type: String,
-        required: true
+        type: mongoose.Schema.ObjectId,
+        required: true,
+        ref: "handyMan"
     },
     userAccepted:{
         type: Boolean,
@@ -34,9 +35,10 @@ const engagementSchema = mongoose.Schema({
         required: true,
         ref: "serviceIssues"
     },
-    invoiceId:{
+    invoice:{
         type: mongoose.Schema.ObjectId,
-        ref: "invoice"
+        ref: "Invoice",
+        default: null
     },
     completed:{
         type: Boolean,
@@ -54,7 +56,7 @@ const engagementSchema = mongoose.Schema({
         type: Number,
         required: true
     },
-    charge:{
+    productCharge:{
         type: Number,
         default: 0
     }
