@@ -69,7 +69,9 @@ module.exports.get = async (req, res) => {
             serviceCharge: 1,
             charge: 1,
             handyManId: 1,
-            title: 1
+            title: 1, 
+            invoice: 1,
+            productCharge: 1
         }
         if (req.query.id == null || req.query.id == "") {
 
@@ -132,28 +134,14 @@ module.exports.get = async (req, res) => {
 }
 
 
-// module.exports.delete = async (req, res) => {
-//     try {
+module.exports.delete = async (req, res) => {
+    try {
 
-//         const v = new Validator(req.body, {
-//             deactivated: "required"
-//         })
-//         const match = await v.check()
-//         if (!match) return res.status(422).json({ error: helper.vErrorsMessageFormatter(v.errors) })
-//         let info = {deactivated: req.body.deactivated}
-//         let updatedHandyMan = await User.findOneAndUpdate({
-//             _id: req.user._id
-//         }, {
-//             $set: info
-//         },
-//             { new: true }
-//         )
-//         if (!updatedHandyMan) {
-//             return res.status(404).send("unable to update. Check Id")
-//         }
-//         return res.send("user deactivated")
-//     } catch (error) {
-//         logger.error(`route: /admin-handyMan/, message - ${error.message}, stack trace - ${error.stack}`);
-//         res.status(500).send("unable to perform request")
-//     }
-// }
+        const deletedEngagement = Engagement.deleteOne({_id: req.params.id, userId: req.user._id, handyManAccepted: false})
+        console.log(deletedEngagement);
+        return res.send("user deactivated")
+    } catch (error) {
+        logger.error(`route: /admin-handyMan/, message - ${error.message}, stack trace - ${error.stack}`);
+        res.status(500).send("unable to perform request")
+    }
+}
