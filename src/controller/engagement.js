@@ -134,12 +134,13 @@ module.exports.get = async (req, res) => {
 }
 
 
-module.exports.delete = async (req, res) => {
+module.exports.deleteOne = async (req, res) => {
     try {
-
-        const deletedEngagement = Engagement.deleteOne({_id: req.params.id, userId: req.user._id, handyManAccepted: false})
-        console.log(deletedEngagement);
-        return res.send("user deactivated")
+        const deletedEngagement = await Engagement.deleteOne({_id: req.params.id, userId: req.user._id, handyManAccepted: false})
+        if(deletedEngagement.n < 1){
+            return res.status(400).send("unable to delete record. Check Id")
+        }
+        return res.send("engagement deleted")
     } catch (error) {
         logger.error(`route: /admin-handyMan/, message - ${error.message}, stack trace - ${error.stack}`);
         res.status(500).send("unable to perform request")
