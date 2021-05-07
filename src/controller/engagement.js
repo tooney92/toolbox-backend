@@ -68,7 +68,8 @@ module.exports.get = async (req, res) => {
             userAddress: 1,
             serviceCharge: 1,
             charge: 1,
-            handyManId: 1
+            handyManId: 1,
+            title: 1
         }
         if (req.query.id == null || req.query.id == "") {
 
@@ -91,7 +92,7 @@ module.exports.get = async (req, res) => {
 
                 engagement.serviceIssue = {
                     _id: engagement.serviceIssue._id,
-                    title: engagement.serviceIssue._title,
+                    title: engagement.serviceIssue.title,
                     serviceCategory: engagement.serviceIssue.serviceCategory,
                     serviceCharge: engagement.serviceIssue.serviceCharge,
                     imageUrl: engagement.serviceIssue.imageUrl,
@@ -118,7 +119,7 @@ module.exports.get = async (req, res) => {
         }
         engagement.serviceIssue = {
             _id: engagement.serviceIssue._id,
-            title: engagement.serviceIssue._title,
+            title: engagement.serviceIssue.title,
             serviceCategory: engagement.serviceIssue.serviceCategory,
             serviceCharge: engagement.serviceIssue.serviceCharge,
             imageUrl: engagement.serviceIssue.imageUrl,
