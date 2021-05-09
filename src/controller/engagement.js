@@ -75,7 +75,7 @@ module.exports.get = async (req, res) => {
         }
         if (req.query.id == null || req.query.id == "") {
 
-            let engagements = await Engagement.find({userId: req.user._id}, fields).populate('handyManId serviceIssue invoiceId')
+            let engagements = await Engagement.find({userId: req.user._id, deleted: false}, fields).populate('handyManId serviceIssue invoiceId')
             if (engagements.length < 1) {
                 return res.json({ engagements: [] })
             }
