@@ -62,7 +62,7 @@ module.exports.login = async(req, res)=>{
             createdAt: 1,
             isUser: 1,
         }
-        let userInfo = await User.findOne({email: req   .body.email}, loginFields)
+        let userInfo = await User.findOne({email: req.body.email}, loginFields)
         userInfo = userInfo.toObject()
         const matchPassword = await bcrypt.compare(req.body.password, userInfo.password)
         if(!matchPassword){

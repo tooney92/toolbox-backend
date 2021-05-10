@@ -1,9 +1,11 @@
 const router = require('express').Router();
-const {create, getAll, getOne, updateOne, deactivate} = require('../controller/handyman')
+const {create, getAll, getOne, updateOne, deactivate, login} = require('../controller/handyman')
 const {verifyAdmin, verifyUserAdmin} = require('../../middlewares/auth')
 
 //create
 router.post('/handyMan',[verifyAdmin], create)
+//log in
+router.post('/handyMan/login', login)
 //get all
 router.get('/handyMan',[verifyUserAdmin], getAll)
 //get one

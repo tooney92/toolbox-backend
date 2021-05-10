@@ -5,6 +5,8 @@ const { Validator } = require('node-input-validator')
 const bcrypt = require('bcrypt');
 const helper = require("../../helpers/errorFormater")
 const _ = require("lodash")
+const saltRounds = 10;
+const jwt = require("jsonwebtoken")
 const awsS3Helper = require('../../helpers/awsS3Upload')
 
 const mimeTypes = [
@@ -51,6 +53,78 @@ module.exports.create = async (req, res) => {
     } catch (error) {
         logger.error(`route: /admin-handyMan/, message - ${error.message}, stack trace - ${error.stack}`);
         if (error.code === 11000) return res.status(409).json({ error: helper.duplicateMessageFormatter(error.keyPattern) })
+        res.status(500).send("unable to perform request")
+    }
+}
+
+module.exports.login = async(req, res)=>{
+    try {
+        const v = new Validator(req.body,{
+            email: "required|email",
+            password: "required",
+        })
+        const match = await v.check()
+        if(!match) return res.status(422).json({error:  helper.vErrorsMessageFormatter(v.errors)})
+        const loginFields = {
+            fullName: 1,
+            bankAccNum: 1,
+            bank: 1,
+            gender: 1,
+            email: 1,
+            password: 1,
+            dob: 1,
+            userName: 1,
+            phoneNumber: 1,
+            primaryArea1: 1,
+            primaryArea2: 1,
+            primaryArea3: 1,
+            profilePicture: 1,
+            deactivated: 1,
+            deleted: 1,
+            engaged: 1,
+            isHandyMan: 1,
+            wallet: 1,
+            serviceCategory: 1,
+            created_by: 1
+        }
+        let handyManInfo = await handyManModel.findOne({email: req.body.email, deactivated: false, deleted:false}, loginFields)
+        if(!handyManInfo){
+            return res.status(404).send("user email or does not exist")
+        }
+        handyManInfo = handyManInfo.toObject()
+        const matchPassword = await bcrypt.compare(req.body.password, handyManInfo.password)
+        if(!matchPassword){
+            return res.status(401).json({error: "user email or does not exist"})
+        } 
+        
+        handyManInfo = _.omit(handyManInfo, ["password", "deactivated", "deleted", "deactivated_by", "created_by"])
+        //jwt
+        await jwt.sign({data: handyManInfo}, process.env.token_secret, {expiresIn: 60 * 60 * 2}, (err, token) => {
+            if(err) return res.status(500).json({message: "Token Could not be generated. Please try logging in again!"})
+            return res.status(200).json({
+                handyManInfo: {
+                    fullName: handyManInfo.fullName,
+                    bankAccNum: handyManInfo.bankAccNum,
+                    bank: handyManInfo.bank,
+                    gender: handyManInfo.gender,
+                    email: handyManInfo.email,
+                    dob: handyManInfo.dob,
+                    userName: handyManInfo.userName,
+                    phoneNumber: handyManInfo.phoneNumber,
+                    primaryArea1: handyManInfo.primaryArea1,
+                    primaryArea2: handyManInfo.primaryArea2,
+                    primaryArea3: handyManInfo.primaryArea3,
+                    profilePicture: handyManInfo.profilePicture,
+                    engaged: handyManInfo.engaged,
+                    isHandyMan: handyManInfo.isHandyMan,
+                    wallet: handyManInfo.wallet,
+                    serviceCategory: handyManInfo.serviceCategory,
+                },
+                token: token
+            })
+        })
+    } catch (error) {
+        logger.error(`route: /users/error, message - ${error.message}, stack trace - ${error.stack}`);
         res.status(500).send("unable to perform request")
     }
 }
