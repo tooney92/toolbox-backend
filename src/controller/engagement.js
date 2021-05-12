@@ -59,6 +59,7 @@ module.exports.get = async (req, res) => {
         let fields = {
             userAccepted: 1,
             handyManAccepted: 1,
+            handyManDeclined: 1,
             completed: 1,
             paymentSuccessfull: 1,
             paystackId: 1,
@@ -105,7 +106,7 @@ module.exports.get = async (req, res) => {
             // engagements.handyManId = _.omit(engagements.handyManId, ["profilePicture", "fullName"])
             return res.json({ engagements })
         }
-        let engagement = await Engagement.findOne({ _id: req.query.id, userId: req.user._id }, fields).populate('handyManId serviceIssue')
+        let engagement = await Engagement.findOne({ _id: req.query.id, userId: req.user._id, deleted: false }, fields).populate('handyManId serviceIssue')
         if (!engagement) {
             return res.status(404).send('check Id')
         }

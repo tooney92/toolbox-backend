@@ -116,7 +116,6 @@ module.exports.login = async(req, res)=>{
                     primaryArea3: handyManInfo.primaryArea3,
                     profilePicture: handyManInfo.profilePicture,
                     engaged: handyManInfo.engaged,
-                    isHandyMan: handyManInfo.isHandyMan,
                     wallet: handyManInfo.wallet,
                     serviceCategory: handyManInfo.serviceCategory,
                 },
@@ -203,6 +202,30 @@ module.exports.updateOne = async (req, res) => {
             return res.status(404).send("unable to update. Check Id")
         }
         updatedHandyMan = _.omit(updatedHandyMan.toObject(), ["_id", "password", "created_by"])
+        return res.json({updatedHandyMan})
+    } catch (error) {
+        logger.error(`route: /admin-handyMan/, message - ${error.message}, stack trace - ${error.stack}`);
+        if (error.code === 11000) return res.status(409).json({ error: helper.duplicateMessageFormatter(error.keyPattern) })
+        res.status(500).send("unable to perform request")
+    }
+}
+
+module.exports.handyManUpdate = async (req, res) => {
+    try {
+
+        let data = req.body
+        data  = _.omit(data, ["wallet", "deactivated_by", "created_by", "imageKey", "engaged", "profilePicture", "deleted", "deactivated"])
+        let updatedHandyMan = await handyManModel.findOneAndUpdate({
+            _id: req.user._id
+        }, {
+            $set: data
+        },
+            { new: true }
+        )
+        if (!updatedHandyMan) {
+            return res.status(404).send("unable to update. Check Id")
+        }
+        updatedHandyMan = _.omit(updatedHandyMan.toObject(), ["_id", "password", "created_by", "deactivated_by", "imageKey"])
         return res.json({updatedHandyMan})
     } catch (error) {
         logger.error(`route: /admin-handyMan/, message - ${error.message}, stack trace - ${error.stack}`);

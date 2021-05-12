@@ -3,7 +3,8 @@ const mongoose = require("mongoose")
 const engagementSchema = mongoose.Schema({
     userId: {
         type: String,
-        required: true
+        required: true,
+        ref: "User"
     },
     userAddress: {
         type: String,
@@ -27,6 +28,14 @@ const engagementSchema = mongoose.Schema({
         default: true
     },
     handyManAccepted:{
+        type: Boolean,
+        default: false
+    },
+    handyManDeclined:{
+        type: Boolean,
+        default: false
+    },
+    userDeclined:{
         type: Boolean,
         default: false
     },
