@@ -36,13 +36,15 @@ module.exports.get = async (req, res) => {
         }
         if (req.query.id == null || req.query.id == "") {
 
-            let engagements = await Engagement.find({handyManId: req.user._id, deleted: false}, fields).populate('userId serviceIssue invoiceId')
+            let engagements = await Engagement.find({handyManId: req.user._id, deleted: false}, fields).populate('userId serviceIssue invoice')
             if (engagements.length < 1) {
                 return res.json({ engagements: [] })
             }
             engagements = engagements.map((engagement) => {
 
                 engagement = engagement.toObject()
+                engagement = _.omit(engagement, ["handyManId"])
+                engagement.invoice = _.omit(engagement.invoice, ["user", "created_by"])
 
                 engagement.userId = {
                     fullName: engagement.userId.fullName,
@@ -63,14 +65,15 @@ module.exports.get = async (req, res) => {
                 return engagement
             })
             // engagements.handyManId = _.omit(engagements.handyManId, ["profilePicture", "fullName"])
-            return res.json({ engagements })
+            return res.json(engagements)
         }
-        let engagement = await Engagement.findOne({ _id: req.query.id, handyManId: req.user._id, deleted: false }, fields).populate('userId serviceIssue')
+        let engagement = await Engagement.findOne({ _id: req.query.id, handyManId: req.user._id, deleted: false }, fields).populate('userId serviceIssue invoice')
         if (!engagement) {
             return res.status(404).send('check Id')
         }
 
         engagement = engagement.toObject()
+        engagement.invoice = _.omit(engagement.invoice, ["user", "created_by"])
         engagement.userId = {
             fullName: engagement.userId.fullName,
             userName: engagement.userId.userName,
@@ -86,7 +89,7 @@ module.exports.get = async (req, res) => {
             serviceCharge: engagement.serviceIssue.serviceCharge,
             imageUrl: engagement.serviceIssue.imageUrl,
         }
-        return res.json(engagement )
+        return res.json(engagement)
     } catch (error) {
         logger.error(`route: /handyMan-engagements, message - ${error.message}, stack trace - ${error.stack}`);
         res.status(500).send("unable to perform request")
@@ -106,7 +109,7 @@ module.exports.accept = async(req, res)=>{
             new: true 
         })
         if(handyManengagement.nModified == 0){
-            return res.status(400).send("unable to perform request")
+            return res.status(404).send("unable to perform request. check Id")
         }
         return res.send("Engagement accepted")
     } catch (error) {
@@ -128,7 +131,7 @@ module.exports.decline = async(req, res)=>{
              new: true 
          })
          if(handyManengagement.nModified == 0){
-             return res.status(400).send("unable to perform request")
+             return res.status(404).send("unable to perform request. check Id")
          }
          console.log(handyManengagement);
          return res.send("Engagement declined")

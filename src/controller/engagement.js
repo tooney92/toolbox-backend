@@ -76,13 +76,16 @@ module.exports.get = async (req, res) => {
         }
         if (req.query.id == null || req.query.id == "") {
 
-            let engagements = await Engagement.find({userId: req.user._id, deleted: false}, fields).populate('handyManId serviceIssue invoiceId')
+            let engagements = await Engagement.find({userId: req.user._id, deleted: false}, fields).populate('handyManId serviceIssue invoice')
             if (engagements.length < 1) {
                 return res.json({ engagements: [] })
             }
             engagements = engagements.map((engagement) => {
 
+                
                 engagement = engagement.toObject()
+                engagement = _.omit(engagement, ["handyManId"])
+                engagement.invoice = _.omit(engagement.invoice, ["user", "created_by"])
 
                 engagement.handyManId = {
                     fullName: engagement.handyManId.fullName,
@@ -106,12 +109,13 @@ module.exports.get = async (req, res) => {
             // engagements.handyManId = _.omit(engagements.handyManId, ["profilePicture", "fullName"])
             return res.json({ engagements })
         }
-        let engagement = await Engagement.findOne({ _id: req.query.id, userId: req.user._id, deleted: false }, fields).populate('handyManId serviceIssue')
+        let engagement = await Engagement.findOne({ _id: req.query.id, userId: req.user._id, deleted: false }, fields).populate('handyManId serviceIssue invoice')
         if (!engagement) {
             return res.status(404).send('check Id')
         }
 
         engagement = engagement.toObject()
+        engagement.invoice = _.omit(engagement.invoice, ["user", "created_by"])
         engagement.handyManId = {
             fullName: engagement.handyManId.fullName,
             userName: engagement.handyManId.userName,

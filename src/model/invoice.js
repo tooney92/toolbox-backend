@@ -6,8 +6,12 @@ const invoiceSchema = mongoose.Schema({
         required: true
     },
     userAccepted: {
-        type: Number,
-        required: true
+        type: Boolean,
+        default: false
+    },
+    userDeclined: {
+        type: Boolean,
+        default: false
     },
     user: {
         type: mongoose.Schema.ObjectId,

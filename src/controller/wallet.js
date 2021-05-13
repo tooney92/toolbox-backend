@@ -25,7 +25,7 @@ module.exports.get = async (req, res) => {
 
         let wallet = await handyMan.findOne({ _id: req.user._id, deleted: false, deactivated: false }, fields)
         if (!wallet) {
-            return res.status(404).send('check Id')
+            return res.status(400).send('unable to process request')
         }
         wallet = wallet.toObject()
         return res.json(wallet)
@@ -54,7 +54,7 @@ module.exports.withdraw = async (req, res) => {
         }
         handyManWallet = handyManWallet.toObject()
         if (Number(handyManWallet.wallet) < Number(req.body.amount)) {
-            return res.status(400).send("cannot withdraw more than available balance")
+            return res.status(401).send("cannot withdraw more than available balance")
         }
 
 
