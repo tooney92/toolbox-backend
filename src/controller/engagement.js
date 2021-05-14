@@ -81,10 +81,8 @@ module.exports.get = async (req, res) => {
                 return res.json({ engagements: [] })
             }
             engagements = engagements.map((engagement) => {
-
-                
                 engagement = engagement.toObject()
-                engagement = _.omit(engagement, ["handyManId"])
+                engagement.handyManId = _.omit(engagement.handyManId, ["_id"])
                 engagement.invoice = _.omit(engagement.invoice, ["user", "created_by"])
 
                 engagement.handyManId = {

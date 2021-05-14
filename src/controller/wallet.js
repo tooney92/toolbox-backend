@@ -54,12 +54,11 @@ module.exports.withdraw = async (req, res) => {
         }
         handyManWallet = handyManWallet.toObject()
         if (Number(handyManWallet.wallet) < Number(req.body.amount)) {
-            return res.status(401).send("cannot withdraw more than available balance")
+            return res.status(400).send("cannot withdraw more than available balance")
         }
 
 
         let balance = Number(handyManWallet.wallet) - Number(req.body.amount)
-        console.log(balance);
         let handymanWalletUpdated = await handyman.findOneAndUpdate({
             _id: req.user._id, deleted: false, deactivated: false
         }, {
