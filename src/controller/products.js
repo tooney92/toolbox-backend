@@ -50,8 +50,12 @@ module.exports.getAll = async (req, res) => {
             created_by: 0,
             imageKey: 0
         }
-        let products = await Product.find({deleted: false}, fields).populate('category')
-        res.json({ products })
+        if(req.query.categoryId != null || req.query.categoryId == ""){
+            let products = await Product.find({deleted: false}, fields).populate('category')
+            return res.json({ products })
+        }
+        let products = await Product.find({deleted: false, category: req.query.categoryId}, fields).populate('category')
+        return res.json({ products })
     } catch (error) {
         logger.error(`route: /products/, message - ${error.message}, stack trace - ${error.stack}`);
         res.status(500).send("unable to perform request")

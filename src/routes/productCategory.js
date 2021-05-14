@@ -1,13 +1,13 @@
 const router = require('express').Router();
 const {create, getAll, getOne, updateOne, deleteOne} = require('../controller/productCategory')
-const {verifyAdmin} = require('../../middlewares/auth')
+const {verifyAdmin, verifyUserHandyManAdmin} = require('../../middlewares/auth')
 
 //create
 router.post('/product-category',[verifyAdmin], create)
 //get all
-router.get('/product-category',[verifyAdmin], getAll)
+router.get('/product-category',[verifyUserHandyManAdmin], getAll)
 //get one
-router.get('/product-category/:id',[verifyAdmin], getOne)
+router.get('/product-category/:id',[verifyUserHandyManAdmin], getOne)
 //update one
 router.put('/product-category/:id',[verifyAdmin], updateOne)
 //delete one
