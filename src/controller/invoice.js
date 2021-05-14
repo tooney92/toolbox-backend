@@ -29,8 +29,7 @@ module.exports.create = async (req, res) => {
         }
 
         const reducer = (accumulator, item) => {
-            console.log(item.price);
-            return accumulator + Number(item.price);
+            return accumulator + (Number(item.price) * Number(item.quantity));
         };
         req.body.created_by = req.user._id
         req.body.user = handyManEngagement.userId
@@ -38,9 +37,6 @@ module.exports.create = async (req, res) => {
         req.body = _.omit(req.body, ["userAccepted"])
         let newInvoice = new Invoice(req.body)
         newInvoice = await newInvoice.save()
-        console.log({
-            _id: handyManEngagement._id, handyManId: req.user._id
-        });
         let updateEngagement = await Engagement.findOneAndUpdate({
             _id: handyManEngagement._id, handyManId: req.user._id
         },{
