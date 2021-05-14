@@ -162,3 +162,19 @@ module.exports.declineInvoice = async (req, res) => {
     }
 }
 
+module.exports.deleteInvoice = async (req, res) => {
+    try {
+   
+        let deleteInvoice = await Invoice.findOneAndDelete({
+            created_by: req.user._id, _id: req.params.invoiceId, userAccepted: false
+        })
+
+        if (!deleteInvoice) {
+            return res.status(400).send("unable to perform request")
+        }
+        return res.send("invoice deleted")
+    } catch (error) {
+        logger.error(`route: /invoice, message - ${error.message}, stack trace - ${error.stack}`);
+        res.status(500).send("unable to perform request")
+    }
+}
