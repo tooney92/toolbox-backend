@@ -50,7 +50,7 @@ module.exports.getAll = async (req, res) => {
             created_by: 0,
             imageKey: 0
         }
-        if(req.query.categoryId != null || req.query.categoryId == ""){
+        if(req.query.categoryId == null || req.query.categoryId == ""){
             let products = await Product.find({deleted: false}, fields).populate('category')
             return res.json({ products })
         }
