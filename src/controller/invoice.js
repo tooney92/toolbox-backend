@@ -8,7 +8,6 @@ const { uuid } = require('uuidv4');
 const { Validator } = require('node-input-validator')
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
-
 const helper = require("../../helpers/errorFormater")
 const _ = require("lodash");
 const { reduce } = require('lodash');
@@ -123,7 +122,10 @@ module.exports.update = async (req, res) => {
 module.exports.acceptInvoice = async (req, res) => {
     try {
 
-        let data = { userAccepted: true }
+        let data = { 
+            userDeclined: false,
+            userAccepted: true,
+         }
         let updatedInvoice = await Invoice.findOneAndUpdate({
             user: req.user._id, _id: req.params.invoiceId,  userDeclined: false
         }, {
@@ -144,7 +146,10 @@ module.exports.acceptInvoice = async (req, res) => {
 module.exports.declineInvoice = async (req, res) => {
     try {
 
-        let data = { userDeclined: true }
+        let data = { 
+            userDeclined: true,
+            userAccepted: false,
+         }
         let updatedInvoice = await Invoice.findOneAndUpdate({
             user: req.user._id, _id: req.params.invoiceId, userAccepted: false, userDeclined: false
         }, {
