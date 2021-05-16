@@ -125,7 +125,7 @@ module.exports.acceptInvoice = async (req, res) => {
 
         let data = { userAccepted: true }
         let updatedInvoice = await Invoice.findOneAndUpdate({
-            user: req.user._id, _id: req.params.invoiceId, userAccepted: false, userDeclined: false
+            user: req.user._id, _id: req.params.invoiceId,  userDeclined: false
         }, {
             $set: data
         }, { new: true })
@@ -133,7 +133,7 @@ module.exports.acceptInvoice = async (req, res) => {
         if (!updatedInvoice) {
             return res.status(400).send("unable to perform request")
         }
-        updatedInvoice = _.pick(updateInvoice, ["_id", "amount", "engagementId", "createdAt", "products", "userAccepted"])
+        updatedInvoice = _.pick(updatedInvoice, ["_id", "amount", "engagementId", "createdAt", "products", "userAccepted", "userDeclined"])
         return res.send(updatedInvoice)
     } catch (error) {
         logger.error(`route: /invoice, message - ${error.message}, stack trace - ${error.stack}`);
@@ -154,7 +154,7 @@ module.exports.declineInvoice = async (req, res) => {
         if (!updatedInvoice) {
             return res.status(400).send("unable to perform request")
         }
-        updatedInvoice = _.pick(updateInvoice, ["_id", "amount", "engagementId", "createdAt", "products", "userAccepted", "userDeclined"])
+        updatedInvoice = _.pick(updatedInvoice, ["_id", "amount", "engagementId", "createdAt", "products", "userAccepted", "userDeclined"])
         return res.send(updatedInvoice)
     } catch (error) {
         logger.error(`route: /invoice, message - ${error.message}, stack trace - ${error.stack}`);
